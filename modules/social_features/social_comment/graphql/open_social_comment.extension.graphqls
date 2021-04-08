@@ -1,5 +1,16 @@
 extend type Query {
-  comments: [Comment]
+  comments(
+    """Returns up to the first `n` elements from the list."""
+    first: Int
+    """Returns up to the last `n` elements from the list."""
+    last: Int
+    """Reverse the order of the underlying list."""
+    reverse: Boolean = false
+    """Sort the underlying list by the given key."""
+    sortKey: UserSortKeys = CREATED_AT
 
-#  comment(id: ID!): Comment
+    entity: ID
+  ): CommentConnection!
+
+  comment(id: ID!): Comment!
 }

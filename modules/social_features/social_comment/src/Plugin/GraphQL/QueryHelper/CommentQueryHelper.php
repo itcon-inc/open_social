@@ -20,7 +20,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   /**
    * The conversations for which participants are being fetched.
    */
-  protected Node $entity;
+  protected $entity;
 
   /**
    * The Drupal entity type manager.
@@ -35,14 +35,14 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   /**
    * ConversationParticipantsQueryHelper constructor.
    *
-   * @param \Drupal\node\Entity\Node $entity
+   * @param mixed $entity
    *   The conversations for which participants are being fetched.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Drupal entity type manager.
    * @param string $sort_key
    *   The key that is used for sorting.
    */
-  public function __construct(Node $entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
+  public function __construct($entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
     $this->entity = $entity;
     $this->entityTypeManager = $entity_type_manager;
     $this->sortKey = $sort_key;
@@ -52,14 +52,18 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
    * {@inheritdoc}
    */
   public function getQuery() : QueryInterface {
-    return $this->entityTypeManager->getStorage('comment')
+    $query =  $this->entityTypeManager->getStorage('comment')
       ->getQuery()
       ->currentRevision()
       ->accessCheck()
       // Exclude the anonymous user from listings because it doesn't make sense
       // in overview pages.
-      ->condition('uid', 0, '!=')
-      ->condition('entity_id', $this->entity->id());
+      ->condition('uid', 0, '!=');
+    if ($this->entity instanceof Node) {
+      $query->condition('entity_id', $this->entity->id());
+    }
+
+    return $query;
   }
 
   /**

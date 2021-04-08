@@ -2,5 +2,16 @@ type Comment implements Node {
   id: ID!
   cid: Int!
   message: String!
-#  files: [File]
+  #  files: [File]
+}
+
+type CommentEdge implements Edge {
+  cursor: Cursor!
+  node: Comment!
+}
+
+type CommentConnection implements Connection {
+  edges: [CommentEdge!]!
+  nodes: [Comment!]!
+  pageInfo: PageInfo!
 }

@@ -54,7 +54,23 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
    * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
    */
   protected function addQueryFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
+    $registry->addFieldResolver('Query', 'comments',
+      $builder->produce('social_comments')
+        ->map('entity', $builder->fromArgument('entity'))
+        ->map('after', $builder->fromArgument('after'))
+        ->map('before', $builder->fromArgument('before'))
+        ->map('first', $builder->fromArgument('first'))
+        ->map('last', $builder->fromArgument('last'))
+        ->map('reverse', $builder->fromArgument('reverse'))
+        ->map('sortKey', $builder->fromArgument('sortKey'))
+    );
 
+    $registry->addFieldResolver('Query', 'comment',
+      $builder->produce('entity_load_by_uuid')
+        ->map('type', $builder->fromValue('comment'))
+        ->map('bundles', $builder->fromValue(['comment']))
+        ->map('uuid', $builder->fromArgument('id'))
+    );
   }
 
 }
