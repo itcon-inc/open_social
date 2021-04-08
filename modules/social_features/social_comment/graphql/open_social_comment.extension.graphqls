@@ -1,0 +1,5 @@
+extend type Query {
+  comments: [Comment]
+
+#  comment(id: ID!): Comment
+}

@@ -1,0 +1,6 @@
+type Comment implements Node {
+  id: ID!
+  cid: Int!
+  message: String!
+#  files: [File]
+}
