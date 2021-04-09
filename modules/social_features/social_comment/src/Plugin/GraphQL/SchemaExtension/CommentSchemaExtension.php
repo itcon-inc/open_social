@@ -27,8 +27,12 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
   }
 
   /**
+   * Registers type and field resolvers in the shared registry.
+   *
    * @param \Drupal\graphql\GraphQL\ResolverRegistryInterface $registry
+   *   The resolver registry.
    * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
+   *   The resolver builder.
    */
   protected function addCommentFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
     $registry->addFieldResolver('Comment', 'message',
@@ -101,8 +105,12 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
   }
 
   /**
+   * Registers type and field resolvers in the query type.
+   *
    * @param \Drupal\graphql\GraphQL\ResolverRegistryInterface $registry
+   *   The resolver registry.
    * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
+   *   The resolver builder.
    */
   protected function addQueryFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
     $registry->addFieldResolver('Query', 'comments',

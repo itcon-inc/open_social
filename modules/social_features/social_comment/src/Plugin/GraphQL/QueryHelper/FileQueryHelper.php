@@ -22,16 +22,22 @@ class FileQueryHelper implements ConnectionQueryHelperInterface {
 
   /**
    * The conversations for which participants are being fetched.
+   *
+   * @var \Drupal\Core\Entity\EntityInterface
    */
   protected EntityInterface $entity;
 
   /**
    * The Drupal entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * The key that is used for sorting.
+   *
+   * @var string
    */
   protected string $sortKey;
 

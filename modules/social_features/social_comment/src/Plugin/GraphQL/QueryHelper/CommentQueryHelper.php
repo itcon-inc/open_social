@@ -19,16 +19,22 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
 
   /**
    * The conversations for which participants are being fetched.
+   *
+   * @var mixed
    */
   protected $entity;
 
   /**
    * The Drupal entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * The key that is used for sorting.
+   *
+   * @var string
    */
   protected string $sortKey;
 
