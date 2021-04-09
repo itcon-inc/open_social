@@ -1,7 +1,18 @@
+"""
+An Open Social Comment.
+"""
 type Comment implements Node {
+  """
+  The Universally Unique Identifier for the discussion entity.
+  """
   id: ID!
-  cid: Int!
+  """
+  The message of the comment.
+  """
   message: String!
+  """
+  One or more attachments such as pdf, csv, doc and etc.
+  """
   attachments(
     """Returns up to the first `n` elements from the list."""
     first: Int
@@ -14,28 +25,43 @@ type Comment implements Node {
   ): CommentAttachments!
 }
 
+"""
+Information about the comment.
+"""
 type CommentEdge implements Edge {
   cursor: Cursor!
   node: Comment!
 }
 
+"""
+Pagination info for the comment.
+"""
 type CommentConnection implements Connection {
   edges: [CommentEdge!]!
   nodes: [Comment!]!
   pageInfo: PageInfo!
 }
 
+"""
+Information about the attachment of a comment.
+"""
 type CommentAttachmentEdge implements Edge {
   cursor: Cursor!
   node: Attachment!
 }
 
+"""
+Pagination info for attachments of a comment.
+"""
 type CommentAttachments implements Connection {
   edges: [CommentAttachmentEdge!]!
   nodes: [Attachment!]!
   pageInfo: PageInfo!
 }
 
+"""
+Information about the file entity.
+"""
 type Attachment implements Media & Node {
   id: ID!
   url: Url!

@@ -1,4 +1,9 @@
 extend type Query {
+  """
+  List of comments.
+
+  If no limits are specified will limit to 10 results.
+  """
   comments(
     """Returns up to the first `n` elements from the list."""
     first: Int
@@ -12,5 +17,13 @@ extend type Query {
     entity: ID
   ): CommentConnection!
 
-  comment(id: ID!): Comment!
+  """
+  Fetch data for a specific comment.
+  """
+  comment(
+    """
+    The id of the discussion to load.
+    """
+    id: ID!
+  ): Comment!
 }
