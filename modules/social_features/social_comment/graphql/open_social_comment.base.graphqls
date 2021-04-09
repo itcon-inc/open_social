@@ -2,7 +2,16 @@ type Comment implements Node {
   id: ID!
   cid: Int!
   message: String!
-  #  files: [File]
+  attachments(
+    """Returns up to the first `n` elements from the list."""
+    first: Int
+    """Returns up to the last `n` elements from the list."""
+    last: Int
+    """Reverse the order of the underlying list."""
+    reverse: Boolean = false
+    """Sort the underlying list by the given key."""
+    sortKey: UserSortKeys = CREATED_AT
+  ): CommentAttachments!
 }
 
 type CommentEdge implements Edge {
@@ -14,4 +23,25 @@ type CommentConnection implements Connection {
   edges: [CommentEdge!]!
   nodes: [Comment!]!
   pageInfo: PageInfo!
+}
+
+type CommentAttachmentEdge implements Edge {
+  cursor: Cursor!
+  node: Attachment!
+}
+
+type CommentAttachments implements Connection {
+  edges: [CommentAttachmentEdge!]!
+  nodes: [Attachment!]!
+  pageInfo: PageInfo!
+}
+
+type Attachment implements Media & Node {
+  id: ID!
+  url: Url!
+  fid: Int!
+  filename: String!
+  filemime: String!
+  filesize: String!
+  created: DateTime!
 }

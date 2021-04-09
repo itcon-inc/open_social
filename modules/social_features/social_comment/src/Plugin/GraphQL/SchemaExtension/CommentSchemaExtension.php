@@ -47,6 +47,62 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
       $builder->produce('entity_id')
         ->map('entity', $builder->fromParent())
     );
+
+    $registry->addFieldResolver('Comment', 'attachments',
+      $builder->produce('social_files')
+        ->map('entity', $builder->fromParent())
+        ->map('after', $builder->fromArgument('after'))
+        ->map('before', $builder->fromArgument('before'))
+        ->map('first', $builder->fromArgument('first'))
+        ->map('last', $builder->fromArgument('last'))
+        ->map('reverse', $builder->fromArgument('reverse'))
+        ->map('sortKey', $builder->fromArgument('sortKey'))
+    );
+
+    $registry->addFieldResolver('Attachment', 'id',
+      $builder->produce('entity_uuid')
+        ->map('entity', $builder->fromParent())
+    );
+
+    $registry->addFieldResolver('Attachment', 'fid',
+      $builder->produce('entity_id')
+        ->map('entity', $builder->fromParent())
+    );
+
+    $registry->addFieldResolver('Attachment', 'url',
+      $builder->produce('property_path')
+        ->map('type', $builder->fromValue('entity:file'))
+        ->map('value', $builder->fromParent())
+        ->map('path', $builder->fromValue('uri.value'))
+    );
+
+    $registry->addFieldResolver('Attachment', 'filename',
+      $builder->produce('property_path')
+        ->map('type', $builder->fromValue('entity:file'))
+        ->map('value', $builder->fromParent())
+        ->map('path', $builder->fromValue('filename.value'))
+    );
+
+    $registry->addFieldResolver('Attachment', 'filemime',
+      $builder->produce('property_path')
+        ->map('type', $builder->fromValue('entity:file'))
+        ->map('value', $builder->fromParent())
+        ->map('path', $builder->fromValue('filemime.value'))
+    );
+
+    $registry->addFieldResolver('Attachment', 'filesize',
+      $builder->produce('property_path')
+        ->map('type', $builder->fromValue('entity:file'))
+        ->map('value', $builder->fromParent())
+        ->map('path', $builder->fromValue('filesize.value'))
+    );
+
+    $registry->addFieldResolver('Attachment', 'created',
+      $builder->produce('property_path')
+        ->map('type', $builder->fromValue('entity:file'))
+        ->map('value', $builder->fromParent())
+        ->map('path', $builder->fromValue('created.value'))
+    );
   }
 
   /**
