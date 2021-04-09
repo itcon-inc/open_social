@@ -13,7 +13,7 @@ use GraphQL\Deferred;
 use GraphQL\Executor\Promise\Adapter\SyncPromise;
 
 /**
- * Loads recent conversations for a specific user.
+ * Loads comments.
  */
 class CommentQueryHelper implements ConnectionQueryHelperInterface {
 
@@ -52,7 +52,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
    * {@inheritdoc}
    */
   public function getQuery() : QueryInterface {
-    $query =  $this->entityTypeManager->getStorage('comment')
+    $query = $this->entityTypeManager->getStorage('comment')
       ->getQuery()
       ->currentRevision()
       ->accessCheck()

@@ -15,7 +15,7 @@ use GraphQL\Deferred;
 use GraphQL\Executor\Promise\Adapter\SyncPromise;
 
 /**
- * Loads recent conversations for a specific user.
+ * Loads files.
  */
 class FileQueryHelper implements ConnectionQueryHelperInterface {
 

@@ -9,12 +9,12 @@ use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerP
 use Drupal\social_comment\Plugin\GraphQL\QueryHelper\CommentQueryHelper;
 
 /**
- * Creates a new article entity.
+ * Queries the comments on the platform.
  *
  * @DataProducer(
  *   id = "social_comments",
- *   name = @Translation("Conversation Participants"),
- *   description = @Translation("Loads the participants for a conversation."),
+ *   name = @Translation("Social Comments"),
+ *   description = @Translation("Loads the comments."),
  *   produces = @ContextDefinition("any",
  *     label = @Translation("EntityConnection")
  *   ),

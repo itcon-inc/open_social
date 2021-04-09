@@ -9,8 +9,8 @@ use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 /**
  * @SchemaExtension(
  *   id = "open_social_comment",
- *   name = "Example extension",
- *   description = "A simple extension that adds node related fields.",
+ *   name = "Open Social - Comment Schema Extension",
+ *   description = "GraphQL schema extension for Open Social comment data.",
  *   schema = "open_social"
  * )
  */
@@ -23,14 +23,14 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
     $builder = new ResolverBuilder();
 
     $this->addQueryFields($registry, $builder);
-    $this->addTopicFields($registry, $builder);
+    $this->addCommentFields($registry, $builder);
   }
 
   /**
    * @param \Drupal\graphql\GraphQL\ResolverRegistryInterface $registry
    * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
    */
-  protected function addTopicFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
+  protected function addCommentFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
     $registry->addFieldResolver('Comment', 'message',
       $builder->produce('property_path')
         ->map('type', $builder->fromValue('entity:comment:comment'))

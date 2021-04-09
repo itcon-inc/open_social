@@ -10,12 +10,12 @@ use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerP
 use Drupal\social_comment\Plugin\GraphQL\QueryHelper\FileQueryHelper;
 
 /**
- * Creates a new article entity.
+ * Queries the files on the platform.
  *
  * @DataProducer(
  *   id = "social_files",
- *   name = @Translation("Conversation Participants"),
- *   description = @Translation("Loads the participants for a conversation."),
+ *   name = @Translation("Social Files"),
+ *   description = @Translation("Loads the files."),
  *   produces = @ContextDefinition("any",
  *     label = @Translation("EntityConnection")
  *   ),
