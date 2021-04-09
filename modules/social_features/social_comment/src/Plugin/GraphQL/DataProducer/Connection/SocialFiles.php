@@ -3,11 +3,14 @@
 namespace Drupal\social_comment\Plugin\GraphQL\DataProducer\Connection;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\Entity\Node;
 use Drupal\social_graphql\GraphQL\EntityConnection;
 use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerPluginBase;
 use Drupal\social_comment\Plugin\GraphQL\QueryHelper\FileQueryHelper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Queries the files on the platform.
@@ -56,6 +59,55 @@ use Drupal\social_comment\Plugin\GraphQL\QueryHelper\FileQueryHelper;
 class SocialFiles extends EntityDataProducerPluginBase {
 
   /**
+   * The database service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * {@inheritdoc}
+   *
+   * @codeCoverageIgnore
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+      $container->get('database')
+    );
+  }
+
+  /**
+   * SocialFiles constructor.
+   *
+   * @param array $configuration
+   *   The plugin configuration array.
+   * @param string $pluginId
+   *   The plugin id.
+   * @param array $pluginDefinition
+   *   The plugin definition array.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   * @param \Drupal\Core\Database\Connection $database
+   *   Database Service Object.
+   *
+   * @codeCoverageIgnore
+   */
+  public function __construct(
+    array $configuration,
+    $pluginId,
+    array $pluginDefinition,
+    EntityTypeManagerInterface $entityTypeManager,
+    Connection $database
+  ) {
+    parent::__construct($configuration, $pluginId, $pluginDefinition, $entityTypeManager);
+    $this->database = $database;
+  }
+
+  /**
    * Resolves the request to the requested values.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -79,7 +131,7 @@ class SocialFiles extends EntityDataProducerPluginBase {
    *   An entity connection with results and data about the paginated results.
    */
   public function resolve(EntityInterface $entity, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
-    $query_helper = new FileQueryHelper($entity, $this->entityTypeManager, $sortKey);
+    $query_helper = new FileQueryHelper($entity, $this->entityTypeManager, $sortKey, $this->database);
     $metadata->addCacheableDependency($query_helper);
 
     $connection = new EntityConnection($query_helper);

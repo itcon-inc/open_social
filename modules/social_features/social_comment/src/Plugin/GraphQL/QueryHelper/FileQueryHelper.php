@@ -3,6 +3,7 @@
 namespace Drupal\social_comment\Plugin\GraphQL\QueryHelper;
 
 use Drupal\comment\Entity\Comment;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
@@ -35,6 +36,13 @@ class FileQueryHelper implements ConnectionQueryHelperInterface {
   protected string $sortKey;
 
   /**
+   * The database service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * ConversationParticipantsQueryHelper constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -43,18 +51,21 @@ class FileQueryHelper implements ConnectionQueryHelperInterface {
    *   The Drupal entity type manager.
    * @param string $sort_key
    *   The key that is used for sorting.
+   * @param \Drupal\Core\Database\Connection $database
+   *   Database Service Object.
    */
-  public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
+  public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key, Connection $database) {
     $this->entity = $entity;
     $this->entityTypeManager = $entity_type_manager;
     $this->sortKey = $sort_key;
+    $this->database = $database;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getQuery() : QueryInterface {
-    $query = \Drupal::database()->select('file_usage', 'fu');
+    $query = $this->database->select('file_usage', 'fu');
     $query->addField('fu', 'fid');
     $query->condition('id', $this->entity->id());
     $query->condition('type', $this->entity->getEntityTypeId());
