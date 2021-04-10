@@ -7,6 +7,8 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 
 /**
+ * Adds comment data to the Open Social GraphQL API.
+ *
  * @SchemaExtension(
  *   id = "open_social_comment",
  *   name = "Open Social - Comment Schema Extension",
