@@ -3,17 +3,21 @@ An Open Social Comment.
 """
 type Comment implements Node {
   """
-  The Universally Unique Identifier for the discussion entity.
+  The unique identifier for the comment.
   """
   id: ID!
   """
   The message of the comment.
   """
-  message: String!
+  body: FormattedText!
   """
   One or more attachments such as pdf, csv, doc and etc.
   """
   attachments(
+    """Returns the elements that come after the specified cursor."""
+    after: Cursor
+    """Returns the elements that come before the specified cursor."""
+    before: Cursor
     """Returns up to the first `n` elements from the list."""
     first: Int
     """Returns up to the last `n` elements from the list."""
@@ -21,13 +25,10 @@ type Comment implements Node {
     """Reverse the order of the underlying list."""
     reverse: Boolean = false
     """Sort the underlying list by the given key."""
-    sortKey: UserSortKeys = CREATED_AT
+    sortKey: AttachmentSortKeys = CREATED_AT
   ): CommentAttachments!
 }
 
-"""
-Information about the comment.
-"""
 type CommentEdge implements Edge {
   cursor: Cursor!
   node: Comment!
@@ -70,4 +71,24 @@ type Attachment implements Media & Node {
   filemime: String!
   filesize: String!
   created: DateTime!
+}
+
+"""
+The set of valid sort keys for the comment query.
+"""
+enum CommentSortKeys {
+  """Sort by the `updated_at` value"""
+  UPDATED_AT
+  """Sort by the `created_at` value"""
+  CREATED_AT
+}
+
+"""
+The set of valid sort keys for the attchments query.
+"""
+enum AttachmentSortKeys {
+  """Sort by the `updated_at` value"""
+  UPDATED_AT
+  """Sort by the `created_at` value"""
+  CREATED_AT
 }

@@ -39,7 +39,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   protected string $sortKey;
 
   /**
-   * ConversationParticipantsQueryHelper constructor.
+   * CommentQueryHelper constructor.
    *
    * @param mixed $entity
    *   The conversations for which participants are being fetched.
@@ -61,10 +61,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
     $query = $this->entityTypeManager->getStorage('comment')
       ->getQuery()
       ->currentRevision()
-      ->accessCheck()
-      // Exclude the anonymous user from listings because it doesn't make sense
-      // in overview pages.
-      ->condition('uid', 0, '!=');
+      ->accessCheck();
     if ($this->entity instanceof Node) {
       $query->condition('entity_id', $this->entity->id());
     }
@@ -143,7 +140,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
    * Get the value for an entity based on the sort key for this connection.
    *
    * @param \Drupal\comment\Entity\Comment $comment
-   *   The participant entity for the user in this conversation.
+   *   The comment entity.
    *
    * @return mixed
    *   The sort value.

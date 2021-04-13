@@ -12,7 +12,7 @@ extend type Query {
     """Reverse the order of the underlying list."""
     reverse: Boolean = false
     """Sort the underlying list by the given key."""
-    sortKey: UserSortKeys = CREATED_AT
+    sortKey: CommentSortKeys = CREATED_AT
 
     entity: ID
   ): CommentConnection!

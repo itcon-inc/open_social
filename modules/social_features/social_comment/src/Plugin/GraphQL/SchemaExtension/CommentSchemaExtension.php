@@ -10,7 +10,7 @@ use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
  * Adds comment data to the Open Social GraphQL API.
  *
  * @SchemaExtension(
- *   id = "open_social_comment",
+ *   id = "social_comment_schema_extension",
  *   name = "Open Social - Comment Schema Extension",
  *   description = "GraphQL schema extension for Open Social comment data.",
  *   schema = "open_social"
@@ -37,11 +37,10 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
    *   The resolver builder.
    */
   protected function addCommentFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
-    $registry->addFieldResolver('Comment', 'message',
-      $builder->produce('property_path')
-        ->map('type', $builder->fromValue('entity:comment:comment'))
-        ->map('value', $builder->fromParent())
-        ->map('path', $builder->fromValue('field_comment_body.value'))
+    $registry->addFieldResolver('Comment', 'body',
+      $builder->produce('field')
+        ->map('entity', $builder->fromParent())
+        ->map('field', $builder->fromValue('field_comment_body'))
     );
 
     $registry->addFieldResolver('Comment', 'id',
