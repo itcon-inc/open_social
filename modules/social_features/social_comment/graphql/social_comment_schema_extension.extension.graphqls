@@ -14,7 +14,7 @@ extend type Query {
     """Sort the underlying list by the given key."""
     sortKey: CommentSortKeys = CREATED_AT
 
-    entity: ID
+    parent: ID
   ): CommentConnection!
 
   """

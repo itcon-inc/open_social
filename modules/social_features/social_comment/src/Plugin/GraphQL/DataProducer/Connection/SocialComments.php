@@ -19,8 +19,8 @@ use Drupal\social_comment\Plugin\GraphQL\QueryHelper\CommentQueryHelper;
  *     label = @Translation("EntityConnection")
  *   ),
  *   consumes = {
- *     "entity" = @ContextDefinition("any",
- *       label = @Translation("Entity"),
+ *     "parent" = @ContextDefinition("any",
+ *       label = @Translation("Parent"),
  *       required = FALSE
  *     ),
  *     "first" = @ContextDefinition("integer",
@@ -57,8 +57,8 @@ class SocialComments extends EntityDataProducerPluginBase {
   /**
    * Resolves the request to the requested values.
    *
-   * @param mixed|null $entity
-   *   The conversation to fetch participants for.
+   * @param mixed|null $parent
+   *   The comment parent entity or ID.
    * @param int|null $first
    *   Fetch the first X results.
    * @param string|null $after
@@ -77,13 +77,13 @@ class SocialComments extends EntityDataProducerPluginBase {
    * @return \Drupal\social_graphql\GraphQL\ConnectionInterface
    *   An entity connection with results and data about the paginated results.
    */
-  public function resolve($entity, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
-    if (is_string($entity)) {
-      $nodes = $this->entityTypeManager->getStorage('node')->loadByProperties(['uuid' => $entity]);
-      $entity = reset($nodes);
+  public function resolve($parent, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
+    if (is_string($parent)) {
+      $nodes = $this->entityTypeManager->getStorage('node')->loadByProperties(['uuid' => $parent]);
+      $parent = reset($nodes);
     }
 
-    $query_helper = new CommentQueryHelper($entity, $this->entityTypeManager, $sortKey);
+    $query_helper = new CommentQueryHelper($parent, $this->entityTypeManager, $sortKey);
     $metadata->addCacheableDependency($query_helper);
 
     $connection = new EntityConnection($query_helper);
