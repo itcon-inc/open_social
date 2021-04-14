@@ -7,9 +7,9 @@ type Comment implements Node {
   """
   id: ID!
   """
-  The message of the comment.
+  The message of the comment with HTML.
   """
-  body: FormattedText!
+  body: BodyHTML!
   """
   One or more attachments such as pdf, csv, doc and etc.
   """
@@ -25,8 +25,8 @@ type Comment implements Node {
     """Reverse the order of the underlying list."""
     reverse: Boolean = false
     """Sort the underlying list by the given key."""
-    sortKey: AttachmentSortKeys = CREATED_AT
-  ): CommentAttachments!
+    sortKey: CommentAttachmentSortKeys = CREATED_AT
+  ): CommentAttachmentConnection!
 }
 
 type CommentEdge implements Edge {
@@ -34,61 +34,35 @@ type CommentEdge implements Edge {
   node: Comment!
 }
 
-"""
-Pagination info for the comment.
-"""
 type CommentConnection implements Connection {
   edges: [CommentEdge!]!
   nodes: [Comment!]!
   pageInfo: PageInfo!
 }
 
-"""
-Information about the attachment of a comment.
-"""
-type CommentAttachmentEdge implements Edge {
-  cursor: Cursor!
-  node: Attachment!
-}
-
-"""
-Pagination info for attachments of a comment.
-"""
-type CommentAttachments implements Connection {
+type CommentAttachmentConnection implements Connection {
   edges: [CommentAttachmentEdge!]!
-  nodes: [Attachment!]!
+  nodes: [File!]!
   pageInfo: PageInfo!
 }
 
+type CommentAttachmentEdge implements Edge {
+  cursor: Cursor!
+  node: File!
+}
+
 """
-Information about the file entity.
+The set of valid sort keys for the attchments query.
 """
-type Attachment implements Media & Node {
-  id: ID!
-  url: Url!
-  fid: Int!
-  filename: String!
-  filemime: String!
-  filesize: String!
-  created: DateTime!
+enum CommentAttachmentSortKeys {
+  """Sort by the `created_at` value"""
+  CREATED_AT
 }
 
 """
 The set of valid sort keys for the comment query.
 """
 enum CommentSortKeys {
-  """Sort by the `updated_at` value"""
-  UPDATED_AT
-  """Sort by the `created_at` value"""
-  CREATED_AT
-}
-
-"""
-The set of valid sort keys for the attchments query.
-"""
-enum AttachmentSortKeys {
-  """Sort by the `updated_at` value"""
-  UPDATED_AT
   """Sort by the `created_at` value"""
   CREATED_AT
 }

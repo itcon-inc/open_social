@@ -49,7 +49,7 @@ class FileQueryHelper implements ConnectionQueryHelperInterface {
   protected $database;
 
   /**
-   * ConversationParticipantsQueryHelper constructor.
+   * FileQueryHelper constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The conversations for which participants are being fetched.

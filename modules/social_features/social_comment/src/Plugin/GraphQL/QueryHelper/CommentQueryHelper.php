@@ -5,7 +5,7 @@ namespace Drupal\social_comment\Plugin\GraphQL\QueryHelper;
 use Drupal\comment\Entity\Comment;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\social_graphql\GraphQL\ConnectionQueryHelperInterface;
 use Drupal\social_graphql\Wrappers\Cursor;
 use Drupal\social_graphql\Wrappers\Edge;
@@ -22,7 +22,7 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
    *
    * @var mixed
    */
-  protected $entity;
+  protected NodeInterface $entity;
 
   /**
    * The Drupal entity type manager.
@@ -41,14 +41,14 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   /**
    * CommentQueryHelper constructor.
    *
-   * @param mixed $entity
+   * @param \Drupal\node\NodeInterface|null $entity
    *   The conversations for which participants are being fetched.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Drupal entity type manager.
    * @param string $sort_key
    *   The key that is used for sorting.
    */
-  public function __construct($entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
+  public function __construct(?NodeInterface $entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
     $this->entity = $entity;
     $this->entityTypeManager = $entity_type_manager;
     $this->sortKey = $sort_key;

@@ -3,7 +3,7 @@
 namespace Drupal\social_comment\Plugin\GraphQL\DataProducer\Connection;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\social_graphql\GraphQL\EntityConnection;
 use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerPluginBase;
 use Drupal\social_comment\Plugin\GraphQL\QueryHelper\CommentQueryHelper;
@@ -19,7 +19,7 @@ use Drupal\social_comment\Plugin\GraphQL\QueryHelper\CommentQueryHelper;
  *     label = @Translation("EntityConnection")
  *   ),
  *   consumes = {
- *     "parent" = @ContextDefinition("any",
+ *     "parent" = @ContextDefinition("entity:node",
  *       label = @Translation("Parent"),
  *       required = FALSE
  *     ),
@@ -57,7 +57,7 @@ class SocialComments extends EntityDataProducerPluginBase {
   /**
    * Resolves the request to the requested values.
    *
-   * @param mixed|null $parent
+   * @param \Drupal\node\NodeInterface|null $parent
    *   The comment parent entity or ID.
    * @param int|null $first
    *   Fetch the first X results.
@@ -77,7 +77,7 @@ class SocialComments extends EntityDataProducerPluginBase {
    * @return \Drupal\social_graphql\GraphQL\ConnectionInterface
    *   An entity connection with results and data about the paginated results.
    */
-  public function resolve($parent, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
+  public function resolve(?NodeInterface $parent, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
     if (is_string($parent)) {
       $nodes = $this->entityTypeManager->getStorage('node')->loadByProperties(['uuid' => $parent]);
       $parent = reset($nodes);
