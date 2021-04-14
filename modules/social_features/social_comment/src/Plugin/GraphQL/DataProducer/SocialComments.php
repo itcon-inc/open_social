@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\social_comment\Plugin\GraphQL\DataProducer\Connection;
+namespace Drupal\social_comment\Plugin\GraphQL\DataProducer;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\node\NodeInterface;

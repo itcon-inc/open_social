@@ -38,12 +38,7 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
    */
   protected function addCommentFields(ResolverRegistryInterface $registry, ResolverBuilder $builder) {
     $registry->addFieldResolver('Comment', 'body',
-      $builder->compose(
-        $builder->produce('field')
-          ->map('entity', $builder->fromParent())
-          ->map('field', $builder->fromValue('field_comment_body')),
-        $builder->fromPath('text', 'value')
-      )
+      $builder->fromPath('entity:comment', 'field_comment_body.value')
     );
 
     $registry->addFieldResolver('Comment', 'id',

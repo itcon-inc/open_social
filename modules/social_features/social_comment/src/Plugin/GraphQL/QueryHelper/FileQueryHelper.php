@@ -80,9 +80,6 @@ class FileQueryHelper implements ConnectionQueryHelperInterface {
     return $this->entityTypeManager->getStorage('file')
       ->getQuery()
       ->accessCheck()
-      // Exclude the anonymous user from listings because it doesn't make sense
-      // in overview pages.
-      ->condition('uid', 0, '!=')
       ->condition('fid', $fids ?: NULL, 'IN');
   }
 

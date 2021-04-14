@@ -1,12 +1,11 @@
 <?php
 
-namespace Drupal\social_comment\Plugin\GraphQL\DataProducer\Connection;
+namespace Drupal\social_comment\Plugin\GraphQL\DataProducer;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\node\Entity\Node;
 use Drupal\social_graphql\GraphQL\EntityConnection;
 use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerPluginBase;
 use Drupal\social_comment\Plugin\GraphQL\QueryHelper\FileQueryHelper;
@@ -23,8 +22,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     label = @Translation("EntityConnection")
  *   ),
  *   consumes = {
- *     "entity" = @ContextDefinition("entity",
- *       label = @Translation("Entity"),
+ *     "parent" = @ContextDefinition("entity",
+ *       label = @Translation("Parent"),
  *       required = TRUE
  *     ),
  *     "first" = @ContextDefinition("integer",
@@ -110,7 +109,7 @@ class SocialFiles extends EntityDataProducerPluginBase {
   /**
    * Resolves the request to the requested values.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $parent
    *   The conversation to fetch participants for.
    * @param int|null $first
    *   Fetch the first X results.
@@ -130,8 +129,8 @@ class SocialFiles extends EntityDataProducerPluginBase {
    * @return \Drupal\social_graphql\GraphQL\ConnectionInterface
    *   An entity connection with results and data about the paginated results.
    */
-  public function resolve(EntityInterface $entity, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
-    $query_helper = new FileQueryHelper($entity, $this->entityTypeManager, $sortKey, $this->database);
+  public function resolve(EntityInterface $parent, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
+    $query_helper = new FileQueryHelper($parent, $this->entityTypeManager, $sortKey, $this->database);
     $metadata->addCacheableDependency($query_helper);
 
     $connection = new EntityConnection($query_helper);

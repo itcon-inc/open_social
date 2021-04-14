@@ -148,10 +148,11 @@ class OpenSocialBaseSchema extends SdlSchemaPluginBase {
     );
 
     $registry->addFieldResolver('File', 'url',
-      $builder->produce('property_path')
-        ->map('type', $builder->fromValue('entity:file'))
-        ->map('value', $builder->fromParent())
-        ->map('path', $builder->fromValue('uri.value'))
+      $builder->compose(
+        $builder->fromPath('entity:file', 'uri.value'),
+        $builder->produce('file_url')
+          ->map('uri', $builder->fromParent())
+      )
     );
 
     $registry->addFieldResolver('File', 'filename',

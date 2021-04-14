@@ -20,9 +20,9 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   /**
    * The conversations for which participants are being fetched.
    *
-   * @var mixed
+   * @var \Drupal\node\NodeInterface|null
    */
-  protected NodeInterface $entity;
+  protected ?NodeInterface $parent;
 
   /**
    * The Drupal entity type manager.
@@ -41,15 +41,15 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
   /**
    * CommentQueryHelper constructor.
    *
-   * @param \Drupal\node\NodeInterface|null $entity
+   * @param \Drupal\node\NodeInterface|null $parent
    *   The conversations for which participants are being fetched.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Drupal entity type manager.
    * @param string $sort_key
    *   The key that is used for sorting.
    */
-  public function __construct(?NodeInterface $entity, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
-    $this->entity = $entity;
+  public function __construct(?NodeInterface $parent, EntityTypeManagerInterface $entity_type_manager, string $sort_key) {
+    $this->parent = $parent;
     $this->entityTypeManager = $entity_type_manager;
     $this->sortKey = $sort_key;
   }
@@ -62,8 +62,9 @@ class CommentQueryHelper implements ConnectionQueryHelperInterface {
       ->getQuery()
       ->currentRevision()
       ->accessCheck();
-    if ($this->entity instanceof Node) {
-      $query->condition('entity_id', $this->entity->id());
+
+    if ($this->parent instanceof NodeInterface) {
+      $query->condition('entity_id', $this->parent->id());
     }
 
     return $query;
