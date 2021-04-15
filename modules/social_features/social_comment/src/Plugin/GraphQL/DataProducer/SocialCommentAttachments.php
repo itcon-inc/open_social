@@ -8,14 +8,14 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\social_graphql\GraphQL\EntityConnection;
 use Drupal\social_graphql\Plugin\GraphQL\DataProducer\Entity\EntityDataProducerPluginBase;
-use Drupal\social_comment\Plugin\GraphQL\QueryHelper\FileQueryHelper;
+use Drupal\social_comment\Plugin\GraphQL\QueryHelper\CommentAttachmentsQueryHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Queries the files on the platform.
  *
  * @DataProducer(
- *   id = "social_files",
+ *   id = "social_comment_attachments",
  *   name = @Translation("Social Files"),
  *   description = @Translation("Loads the files."),
  *   produces = @ContextDefinition("any",
@@ -55,7 +55,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class SocialFiles extends EntityDataProducerPluginBase {
+class SocialCommentAttachments extends EntityDataProducerPluginBase {
 
   /**
    * The database service.
@@ -130,7 +130,7 @@ class SocialFiles extends EntityDataProducerPluginBase {
    *   An entity connection with results and data about the paginated results.
    */
   public function resolve(EntityInterface $parent, ?int $first, ?string $after, ?int $last, ?string $before, bool $reverse, string $sortKey, RefinableCacheableDependencyInterface $metadata) {
-    $query_helper = new FileQueryHelper($parent, $this->entityTypeManager, $sortKey, $this->database);
+    $query_helper = new CommentAttachmentsQueryHelper($parent, $this->entityTypeManager, $sortKey, $this->database);
     $metadata->addCacheableDependency($query_helper);
 
     $connection = new EntityConnection($query_helper);

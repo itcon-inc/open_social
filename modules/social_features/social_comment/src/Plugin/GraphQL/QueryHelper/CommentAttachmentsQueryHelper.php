@@ -18,7 +18,7 @@ use GraphQL\Executor\Promise\Adapter\SyncPromise;
 /**
  * Loads files.
  */
-class FileQueryHelper implements ConnectionQueryHelperInterface {
+class CommentAttachmentsQueryHelper implements ConnectionQueryHelperInterface {
 
   /**
    * The conversations for which participants are being fetched.

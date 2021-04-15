@@ -25,15 +25,16 @@ use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 class FileUrl extends DataProducerPluginBase {
 
   /**
-   * @param string $path
-   * @param mixed $value
-   * @param string|null $type
+   * @param string $uri
+   *   The file URI.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
+   *   Cacheability metadata for this request.
    *
-   * @return mixed
+   * @return string
+   *   The file URL.
    */
   public function resolve($uri, RefinableCacheableDependencyInterface $metadata) {
-    $g = 9;
+    return file_create_url($uri);
   }
 
 }
