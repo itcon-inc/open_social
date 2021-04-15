@@ -25,6 +25,8 @@ use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 class FileUrl extends DataProducerPluginBase {
 
   /**
+   * Resolves the request to the requested values.
+   *
    * @param string $uri
    *   The file URI.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
