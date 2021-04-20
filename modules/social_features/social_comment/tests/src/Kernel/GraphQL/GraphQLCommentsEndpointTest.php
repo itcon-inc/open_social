@@ -81,7 +81,7 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
       'type' => 'text_long',
       'entity_type' => 'comment',
       'field_name' => 'field_comment_body',
-    ])->save();;
+    ])->save();
 
     FieldStorageConfig::create([
       'type' => 'file',
@@ -227,7 +227,17 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
     );
   }
 
-
+  /**
+   * Create the comment entity.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   Account object to get notifications for.
+   * @param \Drupal\node\NodeInterface $node_commented_by_account
+   *   The node object.
+   *
+   * @return \Drupal\comment\CommentInterface
+   *   Created comment entity.
+   */
   private function createComment($account, $node_commented_by_account) {
     $comment = Comment::create([
       'uid' => $account->id(),
@@ -240,6 +250,7 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
     ]);
 
     $comment->save();
+
     return $comment;
   }
 
