@@ -46,6 +46,10 @@ class CommentSchemaExtension extends SdlSchemaExtensionPluginBase {
         ->map('entity', $builder->fromParent())
     );
 
+    $registry->addFieldResolver('Comment', 'created',
+      $builder->fromPath('entity:comment', 'created')
+    );
+
     $registry->addFieldResolver('Comment', 'attachments',
       $builder->produce('social_comment_attachments')
         ->map('parent', $builder->fromParent())

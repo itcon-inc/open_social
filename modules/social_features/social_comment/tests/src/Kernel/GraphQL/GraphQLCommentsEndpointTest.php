@@ -3,8 +3,11 @@
 namespace Drupal\Tests\social_comment\Kernel\GraphQL;
 
 use Drupal\comment\Entity\Comment;
+use Drupal\comment\Entity\CommentType;
 use Drupal\comment\Tests\CommentTestTrait;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\file\Entity\File;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\social_graphql\Kernel\SocialGraphQLTestBase;
@@ -39,6 +42,7 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
     'node',
     'text',
     'user',
+    'file',
   ];
 
   /**
@@ -53,31 +57,72 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
    */
   protected function setUp() : void {
     parent::setUp();
-//    $this->installEntitySchema('user');
-//    $this->installEntitySchema('node');
-//    $this->installEntitySchema('comment');
-//    $this->installSchema('comment', ['comment_entity_statistics']);
-//    $this->installConfig(['filter']);
-////    $this->installConfig(['filter', 'node', 'social_page']);
-
 
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
     $this->installEntitySchema('comment');
     $this->installSchema('comment', ['comment_entity_statistics']);
-    $this->installConfig(['filter']);
+    $this->installConfig(['filter', 'comment']);
+    $this->installEntitySchema('file');
+    $this->installSchema('file', ['file_usage']);
 
     \Drupal::currentUser()->setAccount(User::load(1));
 
-    NodeType::create(['type' => 'page'])->save();
+    FieldStorageConfig::create([
+      'entity_type' => 'node',
+      'type' => 'comment',
+      'field_name' => 'comments',
+      'settings' => [
+        'comment_type' => 'comment',
+      ],
+    ])->save();
 
     FieldStorageConfig::create([
       'type' => 'text_long',
       'entity_type' => 'comment',
-      'field_name' => 'comment_body',
+      'field_name' => 'field_comment_body',
+    ])->save();;
+
+    FieldStorageConfig::create([
+      'type' => 'file',
+      'entity_type' => 'comment',
+      'field_name' => 'field_files',
+      'cardinality' => '-1',
     ])->save();
 
-    $this->addDefaultCommentField('node', 'page', 'comment');
+    NodeType::create(['type' => 'page'])->save();
+
+    CommentType::create([
+      'id' => 'comment',
+      'label' => 'comment',
+      'target_entity_type_id' => 'node',
+    ])->save();
+
+    FieldConfig::create([
+      'field_name' => 'comments',
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'label' => 'Comments',
+    ])->save();
+
+    FieldConfig::create([
+      'field_name' => 'field_comment_body',
+      'entity_type' => 'comment',
+      'bundle' => 'comment',
+      'label' => 'Comments',
+    ])->save();
+
+    FieldConfig::create([
+      'field_name' => 'field_files',
+      'entity_type' => 'comment',
+      'bundle' => 'comment',
+      'label' => 'Attachments',
+      'settings' => [
+        'file_extensions' => 'txt pdf doc docx xls xlsx ppt pptx csv',
+      ],
+    ])->save();
+
+    $this->addDefaultCommentField('node', 'page');
     $account = $this->createUser();
 
     $node_commented_by_account = $this->createNode([
@@ -120,15 +165,37 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
         comment(id: $id) {
           id
           body
+          created {
+            timestamp
+          }
+          attachments(first: 10) {
+            nodes {
+              id
+            }
+          }
         }
       }
     ';
     $expected_data = [
       'comment' => [
         'id' => $test_comment->uuid(),
-        'body' => 'test'
+        'body' => $test_comment->field_comment_body->value,
+        'created' => [
+          'timestamp' => $test_comment->getCreatedTime(),
+        ],
       ],
     ];
+
+    /** @var \Drupal\file\Plugin\Field\FieldType\FileFieldItemList $field_files */
+    $field_files = $test_comment->field_files;
+    /** @var \Drupal\file\Entity\File[] $files */
+    $files = $field_files->referencedEntities();
+
+    foreach ($files as $id => $file) {
+      $expected_data['comment']['attachments']['nodes'][] = [
+        'id' => $file->uuid(),
+      ];
+    }
 
     $this->assertResults(
       $query,
@@ -147,12 +214,39 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
       'uid' => $account->id(),
       'entity_id' => $node_commented_by_account->id(),
       'entity_type' => 'node',
+      'comment_type' => 'comment',
       'field_name' => 'comment',
-      'comment_body' => 'test',
+      'field_comment_body' => $this->randomString(32),
+      'field_files' => [$this->createFile()->id()],
     ]);
 
     $comment->save();
     return $comment;
+  }
+
+  /**
+   * Creates and saves a test file.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   A file entity.
+   */
+  protected function createFile() {
+    // Create a new file entity.
+    $file = File::create([
+      'uid' => 1,
+      'filename' => 'druplicon.txt',
+      'uri' => 'public://druplicon.txt',
+      'filemime' => 'text/plain',
+      'created' => 1,
+      'changed' => 1,
+      'status' => FILE_STATUS_PERMANENT,
+    ]);
+    file_put_contents($file->getFileUri(), 'hello world');
+
+    // Save it, inserting a new record.
+    $file->save();
+
+    return $file;
   }
 
 }

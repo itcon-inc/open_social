@@ -11,6 +11,10 @@ type Comment implements Node {
   """
   body: BodyHTML!
   """
+  The timestamp indicating when the comment was created.
+  """
+  created: DateTime!
+  """
   One or more attachments such as pdf, csv, doc and etc.
   """
   attachments(
