@@ -5,10 +5,12 @@ namespace Drupal\Tests\social_comment\Kernel\GraphQL;
 use Drupal\comment\Entity\Comment;
 use Drupal\comment\Entity\CommentType;
 use Drupal\comment\Tests\CommentTestTrait;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\social_graphql\Kernel\SocialGraphQLTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
@@ -238,7 +240,7 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
    * @return \Drupal\comment\CommentInterface
    *   Created comment entity.
    */
-  private function createComment($account, $node_commented_by_account) {
+  private function createComment(AccountInterface $account, NodeInterface $node_commented_by_account) {
     $comment = Comment::create([
       'uid' => $account->id(),
       'entity_id' => $node_commented_by_account->id(),
