@@ -171,6 +171,13 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
           attachments(first: 10) {
             nodes {
               id
+              url
+              filename
+              filemime
+              filesize
+              created {
+                timestamp
+              }
             }
           }
         }
@@ -191,9 +198,24 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
     /** @var \Drupal\file\Entity\File[] $files */
     $files = $field_files->referencedEntities();
 
+    $metadata = $this->defaultCacheMetaData()
+      ->setCacheMaxAge(0)
+      ->addCacheableDependency($test_comment)
+      // @todo It's unclear why this cache context is added.
+      ->addCacheContexts(['languages:language_interface']);
+
     foreach ($files as $id => $file) {
+      $metadata->addCacheableDependency($file);
+
       $expected_data['comment']['attachments']['nodes'][] = [
         'id' => $file->uuid(),
+        'url' => $file->createFileUrl(FALSE),
+        'filename' => $file->getFilename(),
+        'filemime' => $file->filemime->value,
+        'filesize' => $file->filesize->value,
+        'created' => [
+          'timestamp' => $file->getCreatedTime(),
+        ],
       ];
     }
 
@@ -201,10 +223,7 @@ class GraphQLCommentsEndpointTest extends SocialGraphQLTestBase {
       $query,
       ['id' => $test_comment->uuid()],
       $expected_data,
-      $this->defaultCacheMetaData()
-        ->addCacheableDependency($test_comment)
-        // @todo It's unclear why this cache context is added.
-        ->addCacheContexts(['languages:language_interface'])
+      $metadata
     );
   }
 
