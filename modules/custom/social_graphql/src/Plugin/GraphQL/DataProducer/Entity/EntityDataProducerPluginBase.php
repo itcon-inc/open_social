@@ -16,10 +16,8 @@ class EntityDataProducerPluginBase extends DataProducerPluginBase implements Con
 
   /**
    * The entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * {@inheritdoc}
